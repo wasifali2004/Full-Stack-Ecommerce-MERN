@@ -7,6 +7,9 @@ import productRoute from './routes/productRoute.js';
 import dotenv from 'dotenv';
 import cartRouter from './routes/cartRoute.js';
 import orderRouter from './routes/orderRoute.js';
+import dns from 'dns';
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
 dotenv.config();
 
 const app = express();
