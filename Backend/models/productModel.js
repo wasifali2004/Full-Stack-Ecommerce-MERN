@@ -25,9 +25,14 @@ const productSchema = new mongoose.Schema({
         type:String,
         required: true
     },
+    variants: {
+        type:[String],
+        required: true,
+        default: ['Standard']
+    },
     sizes: {
-        type:Array,
-        required: true
+        type:[String],
+        default: undefined
     },
     bestSeller: {
         type:Boolean,

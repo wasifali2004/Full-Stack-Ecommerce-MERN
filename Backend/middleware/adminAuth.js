@@ -1,26 +1,23 @@
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
-dotenv.config();
 
 const adminAuth = async (req, res, next) => {
     try {
-        const {token} = req.headers
+        const authorization = req.headers.authorization
+        const token = req.headers.token || (authorization?.startsWith('Bearer ') ? authorization.slice(7) : '')
 
         if (!token) {
-            return res.json({ success: false, message: "Not Authorized Login Again" });
+            return res.status(401).json({ success: false, message: "Not authorized. Please log in again." });
         }
 
         const token_decode = jwt.verify(token, process.env.JWT_SECRET);
-        console.log("Decoded Token:", token_decode);
 
-        if (token_decode !== process.env.ADMIN_EMAIL + process.env.ADMIN_PASSWORD ) {
-            return res.json({ success: false, message: "Not Authorized, login again" });
+        if (token_decode.isAdmin !== true) {
+            return res.status(403).json({ success: false, message: "Administrator access required" });
         }
 
         next();
-    } catch (err) {
-        console.error("JWT Error:", err.message);
-        return res.json({ success: false, message: err.message });
+    } catch {
+        return res.status(401).json({ success: false, message: "Invalid or expired token" });
     }
 };
 

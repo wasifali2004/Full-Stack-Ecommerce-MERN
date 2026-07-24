@@ -1,4 +1,4 @@
-import mongoose, { mongo } from 'mongoose'
+import mongoose from 'mongoose'
 
 const orderSchema = new mongoose.Schema({
     userId: {
@@ -35,8 +35,12 @@ const orderSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    stripeSessionId: {
+        type: String,
+        default: '',
+    },
 })
 
-const orderModel = mongoose.model.order || mongoose.model('order', orderSchema);
+const orderModel = mongoose.models.order || mongoose.model('order', orderSchema);
 
 export default orderModel;

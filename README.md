@@ -1,62 +1,59 @@
-Technologies Used
-Frontend
-React.js: Used for building the user interface and managing component-based architecture.
+# Nexora Electronics — MERN Ecommerce
 
-Redux: Employed for efficient and centralized state management across the application.
+This repository contains three applications:
 
-React Bootstrap: Provided pre-built UI components to ensure responsive and visually appealing design.
+- `Frontend`: React/Vite customer storefront
+- `Admin/Admin Dashboard`: React/Vite product and order administration
+- `Backend`: Express, MongoDB, Cloudinary, JWT authentication, and Stripe checkout
 
-Axios: Handled HTTP requests and communication with the backend API.
+## Local setup
 
-Backend
-Node.js: Served as the runtime environment for executing server-side JavaScript.
+Use Node.js 20 or newer. Install each application's dependencies:
 
-Express.js: Used to create robust API endpoints and manage server-side routing.
+```bash
+cd Frontend
+npm install
 
-MongoDB: A NoSQL database used for storing application data, integrated using Mongoose ODM.
+cd "../Admin/Admin Dashboard"
+npm install
 
-JSON Web Tokens (JWT): Implemented for secure user authentication and authorization.
-
-Stripe API: Integrated to enable secure and efficient payment processing.
-
-Development Tools
-Nodemon: Used for automatically restarting the server during development.
-
-Concurrently: Allowed simultaneous running of the frontend and backend servers.
-
-Postman: Utilized for testing and validating backend API endpoints.
-
-## Environment Variables Setup
-
-### Backend (.env)
-Create a `.env` file in the Backend directory with the following variables:
-
-```env
-PORT=4000
-MONGODB_URI=mongodb://127.0.0.1:27017
-CLOUDINARY_NAME=your-cloudinary-cloud-name
-CLOUDINARY_API_KEY=your-cloudinary-api-key
-CLOUDINARY_SECRET_KEY=your-cloudinary-secret-key
-JWT_SECRET=your-jwt-secret
-ADMIN_EMAIL=admin@example.com
-ADMIN_PASSWORD=your-admin-password
-
+cd ../../Backend
+npm install
 ```
 
-### Frontend (.env)
-Create a `.env` file in the Frontend directory with:
+Copy each `.env.example` to `.env` in the same directory and replace the placeholder values. The backend uses MongoDB Atlas through `MONGODB_URI` and requires JWT settings to start. Cloudinary is required for product image uploads, and Stripe is required only for Stripe checkout.
 
-```env
-VITE_BACKEND_URL=http://localhost:4000
+Start the API, storefront, and admin dashboard in separate terminals:
+
+```bash
+# Backend
+npm run server
+
+# Frontend
+npm run dev
+
+# Admin/Admin Dashboard
+npm run dev
 ```
 
-### Admin Dashboard (.env)
-Create a `.env` file in the Admin Dashboard directory with:
+The default local URLs are:
 
-```env
-VITE_BACKEND_URL=http://localhost:4000
+- API: `http://localhost:4000`
+- Storefront: `http://localhost:5173`
+- Admin: `http://localhost:5174` (or the next available port printed by Vite)
+
+## Verification
+
+Run these before committing or deploying:
+
+```bash
+# Frontend and Admin/Admin Dashboard
+npm run lint
+npm run build
+
+# Backend
+npm run build
+npm test
 ```
 
-
-
-
+Order totals and product details are recalculated by the API. Stripe orders are marked paid only after the API retrieves and validates the Checkout Session.
