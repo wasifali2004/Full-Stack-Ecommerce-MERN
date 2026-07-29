@@ -4,7 +4,7 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "build": "node --check server.js && node --check controllers/cartController.js && node --check controllers/orderController.js && node --check controllers/productController.js && node --check controllers/userControllers.js",
+    "build": "node --check server.js && node --check controllers/cartController.js && node --check controllers/orderController.js && node --check controllers/productController.js && node --check controllers/userControllers.js && node --check controllers/reviews.controller.js",
     "test": "npm run build",
     "start": "node server.js",
     "server": "nodemon server.js"
