@@ -58,7 +58,9 @@ const Orders = ({ token }) => {
               <div>
                 {order.items.map((item, index) => (
                   <p key={`${item._id}-${item.variant || item.size}-${index}`} className="py-0.5">
-                      {item.name} x {item.quantity} <span>({item.variant || item.size || 'Standard'}{item.color ? ` • ${item.color}` : ''})</span>{index < order.items.length - 1 ? ',' : ''}
+                      {item.name} x {item.quantity} <span>({item.variant || item.size || 'Standard'}{item.color ? ` • ${item.color}` : ''})</span>
+                      <span className='ml-2 text-xs text-slate-500'>ID: {item.productCode || item._id}</span>
+                      {index < order.items.length - 1 ? ',' : ''}
                   </p>
                 ))}
               </div>

@@ -38,6 +38,11 @@ const productSchema = new mongoose.Schema({
         type: [String],
         default: undefined,
     },
+    productCode: {
+        type: String,
+        required: true,
+        unique: true,
+    },
     sizes: {
         type:[String],
         default: undefined

@@ -50,6 +50,7 @@ const buildOrder = async (requestedItems) => {
             subCategory: product.subCategory,
             variant,
             color,
+            productCode: product.productCode,
             quantity,
         }
     })

@@ -57,6 +57,13 @@ const addProduct = async (req,res) => {
             })
         )
 
+        // generate a short unique product code for admin tracking
+        const generateCode = () => {
+            const prefix = 'P'
+            const rand = Math.random().toString(36).slice(2, 8).toUpperCase()
+            return `${prefix}${Date.now().toString(36).toUpperCase()}${rand}`
+        }
+
         const product = new productModel({
             name: name.trim(),
             description: description.trim(),
@@ -68,6 +75,7 @@ const addProduct = async (req,res) => {
             specifications: normalizedSpecs,
             colors: normalizedColors,
             image: imageUrls,
+            productCode: generateCode(),
             date: Date.now()
         })
 
