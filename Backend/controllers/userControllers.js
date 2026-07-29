@@ -85,8 +85,9 @@ const registerUser = async (req, res) => {
 
         const newUser = new userModel({
             name,
-            email, 
-            password:hashPassword
+            email,
+            password:hashPassword,
+            role: 'user'
         })
 
         const user = await newUser.save()
@@ -102,24 +103,41 @@ const adminLogin = async (req, res) => {
     try {
         const email = req.body.email?.trim().toLowerCase()
         const { password } = req.body;
-        if(email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-            const token = jwt.sign(
-                { id: "admin-id", isAdmin: true },
-                process.env.JWT_SECRET,
-                { expiresIn: '12h' },
-            );
-            res.json({
-                success: true,
-                token,
-                isAdmin: true
-            });
-        }
-        else {
-            res.status(401).json({
+
+        if (!email || !password) {
+            return res.status(400).json({
                 success: false,
-                message: "Invalid credentials"
+                message: "Email and password are required"
             });
         }
+
+        const user = await userModel.findOne({ email });
+        if (!user || user.role !== 'admin') {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid admin credentials"
+            });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid admin credentials"
+            });
+        }
+
+        const token = jwt.sign(
+            { id: user._id, isAdmin: true, role: 'admin' },
+            process.env.JWT_SECRET,
+            { expiresIn: '12h' },
+        );
+
+        res.json({
+            success: true,
+            token,
+            isAdmin: true
+        });
     }
     catch(err) {
         console.error("Admin Login Error:", err);
