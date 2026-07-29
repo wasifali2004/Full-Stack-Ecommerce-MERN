@@ -66,6 +66,7 @@ const Orders = () => {
                   <p>{currency}{item.price}</p>
                   <p>Quantity: {item.quantity}</p>
                   <p>Variant: {item.variant || item.size || 'Standard'}</p>
+                  {item.color && <p>Color: {item.color}</p>}
                 </div>
                 <p className='mt-1'>Date: <span className='text-gray-400'>{new Date(item.date).toDateString()}</span></p>
                 <p className='mt-1'>Payment: <span className='text-gray-400'>{item.payment ? 'Paid' : item.paymentMethod === 'COD' ? 'Cash on delivery' : 'Pending'}</span></p>

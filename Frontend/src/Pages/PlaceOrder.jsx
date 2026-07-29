@@ -35,7 +35,15 @@ const PlaceOrder = () => {
         const quantity = cartItems[productId][variant]
         const product = products.find((item) => item._id === productId)
         if(product && quantity > 0) {
-          orderItems.push({_id: product._id, variant, quantity})
+          // variant may encode color as "variant::color:ColorName"
+          let color = undefined
+          let bareVariant = variant
+          const parts = String(variant).split('::color:')
+          if (parts.length === 2) {
+            bareVariant = parts[0]
+            color = parts[1]
+          }
+          orderItems.push({_id: product._id, variant: bareVariant, color, quantity})
         }
       }
     }

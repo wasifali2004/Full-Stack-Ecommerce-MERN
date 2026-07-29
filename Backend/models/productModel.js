@@ -30,6 +30,19 @@ const productSchema = new mongoose.Schema({
         required: true,
         default: ['Standard']
     },
+    specifications: {
+        type: [{ key: String, value: String }],
+        default: undefined,
+    },
+    colors: {
+        type: [String],
+        default: undefined,
+    },
+    productCode: {
+        type: String,
+        required: true,
+        unique: true,
+    },
     sizes: {
         type:[String],
         default: undefined
