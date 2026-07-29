@@ -28,10 +28,15 @@ const buildOrder = async (requestedItems) => {
         const product = productsById.get(requestedItem._id)
         const quantity = Number(requestedItem.quantity)
         const variant = requestedItem.variant || requestedItem.size
+        const color = requestedItem.color
         const productVariants = product?.variants?.length ? product.variants : product?.sizes
 
         if (!product || !Number.isInteger(quantity) || quantity < 1 || !productVariants?.includes(variant)) {
             throw new Error('One or more cart items are invalid')
+        }
+
+        if (color && Array.isArray(product.colors) && product.colors.length > 0 && !product.colors.includes(color)) {
+            throw new Error('Selected color is not available for one or more items')
         }
 
         subtotal += product.price * quantity
@@ -44,6 +49,7 @@ const buildOrder = async (requestedItems) => {
             category: product.category,
             subCategory: product.subCategory,
             variant,
+            color,
             quantity,
         }
     })

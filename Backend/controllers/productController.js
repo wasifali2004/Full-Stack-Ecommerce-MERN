@@ -17,6 +17,19 @@ const addProduct = async (req,res) => {
             return res.status(400).json({success:false, message:'Product variants are invalid'})
         }
 
+        let specifications = []
+        try {
+            specifications = JSON.parse(req.body.specifications || '[]')
+        } catch {
+            return res.status(400).json({success:false, message:'Product specifications are invalid'})
+        }
+        let colors = []
+        try {
+            colors = JSON.parse(req.body.colors || '[]')
+        } catch {
+            return res.status(400).json({success:false, message:'Product colors are invalid'})
+        }
+
         if (!name?.trim() || !description?.trim() || !category || !subCategory) {
             return res.status(400).json({success:false, message:'All product details are required'})
         }
@@ -26,6 +39,10 @@ const addProduct = async (req,res) => {
         const normalizedVariants = Array.isArray(variants)
             ? variants.map((variant) => String(variant).trim()).filter(Boolean)
             : []
+        const normalizedSpecs = Array.isArray(specifications)
+            ? specifications.map((s) => ({ key: String(s.key || '').trim(), value: String(s.value || '').trim() })).filter((s) => s.key)
+            : []
+        const normalizedColors = Array.isArray(colors) ? colors.map((c) => String(c || '').trim()).filter(Boolean) : []
         if (normalizedVariants.length === 0) {
             return res.status(400).json({success:false, message:'Add at least one product variant'})
         }
@@ -48,6 +65,8 @@ const addProduct = async (req,res) => {
             subCategory,
             bestSeller,
             variants: normalizedVariants,
+            specifications: normalizedSpecs,
+            colors: normalizedColors,
             image: imageUrls,
             date: Date.now()
         })

@@ -36,7 +36,11 @@ const Cart = () => {
       )}
 
       <div>
-        {cartData.map(({product, variant, quantity}) => (
+        {cartData.map(({product, variant, quantity}) => {
+          const parts = String(variant).split('::color:')
+          const bareVariant = parts[0]
+          const color = parts[1]
+          return (
           <div
             key={`${product._id}-${variant}`}
             className="py-4 border-t border-b text-gray-700 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4"
@@ -47,7 +51,10 @@ const Cart = () => {
                 <p className="text-sm sm:text-lg font-medium">{product.name}</p>
                 <div className="flex items-center gap-5 mt-2">
                   <p>{currency}{product.price}</p>
-                  <p className="px-2 sm:px-3 sm:py-1 border rounded bg-slate-50">{variant}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="px-2 sm:px-3 sm:py-1 border rounded bg-slate-50">{bareVariant}</p>
+                    {color && <p className="px-2 sm:px-3 sm:py-1 border rounded bg-slate-50">Color: {color}</p>}
+                  </div>
                 </div>
               </div>
             </div>
@@ -70,8 +77,8 @@ const Cart = () => {
             >
               <img src={assets.bin_icon} alt="" className="w-4 sm:w-5" />
             </button>
-          </div>
-        ))}
+            </div>
+          )})}
       </div>
 
       <div className="flex justify-end my-20">

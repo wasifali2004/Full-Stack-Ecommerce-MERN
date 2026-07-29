@@ -14,11 +14,13 @@ const Product = () => {
   )
   const [image, setImage] = useState('')
   const [variant, setVariant] = useState('')
+  const [color, setColor] = useState('')
   const [reviewSummary, setReviewSummary] = useState({ count: 0, average: 0 })
 
   useEffect(() => {
     setImage(productData?.image[0] || '')
     setVariant('')
+    setColor('')
   }, [productData])
 
   const handleReviewChange = (reviews = []) => {
@@ -70,7 +72,20 @@ const Product = () => {
               ))}
             </div>
           </div>
-          <button type='button' onClick={() => addToCart(productData._id, variant)} className='bg-blue-600 hover:bg-blue-700 rounded-lg mt-10 text-white px-8 py-3 text-sm active:bg-blue-800 cursor-pointer transition'>ADD TO CART</button>
+          {productData.colors?.length > 0 && (
+            <div className='flex flex-col gap-2 mt-4'>
+              <p className='font-medium'>Choose a color</p>
+              <div className='flex flex-wrap gap-2'>
+                {productData.colors.map((c) => (
+                  <button key={c} type='button' onClick={() => setColor(c)} className={`flex items-center gap-2 border rounded-lg cursor-pointer py-2 px-3 ${c === color ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-slate-200 hover:border-blue-300'}`}>
+                    <span className='inline-block w-3 h-3 rounded-full' style={{background: c}}></span>
+                    <span>{c}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          <button type='button' onClick={() => addToCart(productData._id, variant, color)} className='bg-blue-600 hover:bg-blue-700 rounded-lg mt-10 text-white px-8 py-3 text-sm active:bg-blue-800 cursor-pointer transition'>ADD TO CART</button>
           <hr className='mt-8 sm:w-4/5 opacity-14' />
           <div className='text-sm text-gray-500 mt-5 flex flex-col gap-1'>
             <p>Authentic products from trusted suppliers.</p>
@@ -87,6 +102,20 @@ const Product = () => {
         </div>
         <div className='flex flex-col gap-4 border px-6 py-6 text-sm text-gray-500'>
           <p>{productData.description}</p>
+
+          {productData.specifications?.length > 0 && (
+            <div className='mt-3'>
+              <h3 className='font-medium mb-2'>Specifications</h3>
+              <div className='flex flex-wrap gap-2'>
+                {productData.specifications.map((s, i) => (
+                  <div key={`${s.key}-${i}`} className='border rounded px-3 py-1 text-sm bg-slate-50'>
+                    <strong className='mr-2'>{s.key}:</strong>
+                    <span>{s.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
         <div className='mt-6'>
           <Reviews productId={productData._id} token={token} backendUrl={backendUrl} onReviewChange={handleReviewChange} />

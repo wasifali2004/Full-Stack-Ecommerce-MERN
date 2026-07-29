@@ -16,6 +16,10 @@ const Add = ({token}) => {
   const [subCategory, setSubCategory] = useState(subCategories[0])
   const [bestSeller, setBestSeller] = useState(false)
   const [variantInput, setVariantInput] = useState('Standard')
+  const [specsInput, setSpecsInput] = useState('')
+  const [specs, setSpecs] = useState([])
+  const [colorsInput, setColorsInput] = useState('')
+  const [colors, setColors] = useState([])
   const [submitting, setSubmitting] = useState(false)
 
   const updateImage = (index, file) => {
@@ -47,6 +51,8 @@ const Add = ({token}) => {
       formData.append('subCategory', subCategory)
       formData.append('bestSeller', bestSeller)
       formData.append('variants', JSON.stringify(variants))
+      formData.append('specifications', JSON.stringify(specs))
+      formData.append('colors', JSON.stringify(colors))
       images.forEach((image, index) => {
         if (image) formData.append(`image${index + 1}`, image)
       })
@@ -64,6 +70,10 @@ const Add = ({token}) => {
         setImages([false, false, false, false])
         setPrice('')
         setVariantInput('Standard')
+        setSpecs([])
+        setSpecsInput('')
+        setColors([])
+        setColorsInput('')
         setBestSeller(false)
       } else {
         toast.error(response.data.message)
@@ -73,6 +83,34 @@ const Add = ({token}) => {
     } finally {
       setSubmitting(false)
     }
+  }
+
+  const parseSpecsFromInput = () => {
+    const parts = specsInput.split(',').map((p) => p.trim()).filter(Boolean)
+    const parsed = parts.map((part) => {
+      const [k, ...rest] = part.split(':')
+      const v = rest.join(':')
+      return { key: (k || '').trim(), value: (v || '').trim() }
+    }).filter((s) => s.key)
+    const merged = [...specs, ...parsed]
+    setSpecs(merged)
+    setSpecsInput('')
+  }
+
+  const removeSpec = (index) => {
+    setSpecs((current) => current.filter((_, i) => i !== index))
+  }
+
+  const parseColorsFromInput = () => {
+    const parts = colorsInput.split(',').map((p) => p.trim()).filter(Boolean)
+    const merged = [...colors, ...parts.filter(Boolean)]
+    // unique
+    setColors([...new Set(merged)])
+    setColorsInput('')
+  }
+
+  const removeColor = (index) => {
+    setColors((current) => current.filter((_, i) => i !== index))
   }
 
   return (
@@ -146,6 +184,56 @@ const Add = ({token}) => {
           placeholder='Standard, 128GB / Black, 256GB / Silver'
         />
         <p className='text-xs text-slate-500 mt-1'>Separate configurations with commas. Use “Standard” when the product has one option.</p>
+      </div>
+
+      <div className='w-full'>
+        <label className='mb-2 block font-medium' htmlFor='product-specs'>Specifications</label>
+        <div className='flex gap-2'>
+          <input
+            id='product-specs'
+            value={specsInput}
+            onChange={(e) => setSpecsInput(e.target.value)}
+            className='w-full max-w-[520px] px-3 py-2.5'
+            placeholder='e.g. color: red, weight: 1.5kg, wifi: yes'
+          />
+          <button type='button' onClick={parseSpecsFromInput} className='px-4 py-2 bg-slate-700 text-white rounded-md'>Add</button>
+        </div>
+        <p className='text-xs text-slate-500 mt-1'>Type one or more specs separated by commas. Use `key: value` pairs.</p>
+
+        <div className='flex flex-wrap gap-2 mt-3'>
+          {specs.map((s, i) => (
+            <span key={`${s.key}-${i}`} className='flex items-center gap-2 bg-slate-100 border rounded-full px-3 py-1 text-sm'>
+              <strong className='mr-1'>{s.key}:</strong>
+              <span>{s.value}</span>
+              <button type='button' onClick={() => removeSpec(i)} className='ml-2 text-red-500'>✕</button>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div className='w-full'>
+        <label className='mb-2 block font-medium' htmlFor='product-colors'>Colors</label>
+        <div className='flex gap-2'>
+          <input
+            id='product-colors'
+            value={colorsInput}
+            onChange={(e) => setColorsInput(e.target.value)}
+            className='w-full max-w-[520px] px-3 py-2.5'
+            placeholder='e.g. Red, Black, Silver'
+          />
+          <button type='button' onClick={parseColorsFromInput} className='px-4 py-2 bg-slate-700 text-white rounded-md'>Add</button>
+        </div>
+        <p className='text-xs text-slate-500 mt-1'>Add available product colors as tags. Buyers can select one at purchase.</p>
+
+        <div className='flex flex-wrap gap-2 mt-3'>
+          {colors.map((c, i) => (
+            <span key={`${c}-${i}`} className='flex items-center gap-2 bg-white border rounded-full px-3 py-1 text-sm'>
+              <span className='inline-block w-3 h-3 rounded-full' style={{background: c}}></span>
+              <span>{c}</span>
+              <button type='button' onClick={() => removeColor(i)} className='ml-2 text-red-500'>✕</button>
+            </span>
+          ))}
+        </div>
       </div>
 
       <label className='flex items-center gap-2 mt-1 cursor-pointer'>

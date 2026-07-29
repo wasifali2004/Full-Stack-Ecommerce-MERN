@@ -49,7 +49,7 @@ const ShopContextProvider = ({children}) => {
       }
     }, [backendUrl])
 
-    const addToCart = useCallback(async (itemId, variant) => {
+    const addToCart = useCallback(async (itemId, variant, color) => {
       if(!variant) {
         toast.error('Select a product variant')
         return
@@ -57,15 +57,16 @@ const ShopContextProvider = ({children}) => {
 
       const previousCart = structuredClone(cartItems)
       const cartData = structuredClone(cartItems)
+      const variantKey = color ? `${variant}::color:${color}` : variant
       cartData[itemId] ??= {}
-      cartData[itemId][variant] = (cartData[itemId][variant] || 0) + 1
+      cartData[itemId][variantKey] = (cartData[itemId][variantKey] || 0) + 1
       setCartItems(cartData)
 
       if(token) {
         try{
           const response = await axios.post(
             `${backendUrl}/api/cart/add`,
-            {itemId, variant},
+            {itemId, variant: variantKey},
             {headers:{token}},
           )
           if (!response.data.success) {
