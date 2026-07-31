@@ -6,6 +6,7 @@ import { assets } from "../assets/assets";
 
 const Orders = ({ token }) => {
   const [orders, setOrders] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchAllOrders = useCallback(async () => {
     if (!token) return
@@ -47,11 +48,44 @@ const Orders = ({ token }) => {
     fetchAllOrders()
   }, [fetchAllOrders])
 
+  const normalizedSearch = searchTerm.trim().toLowerCase();
+  const filteredOrders = orders.filter((order) => {
+    if (!normalizedSearch) return true;
+
+    const searchableText = [
+      order.user?.name,
+      order.user?.customerId,
+      order.user?.email,
+      order.userId,
+      order.address?.firstName,
+      order.address?.lastName,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return searchableText.includes(normalizedSearch);
+  });
+
   return (
     <div>
-      <h3>Orders</h3>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
+        <h3 className="text-xl font-semibold">Orders</h3>
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+          placeholder="Search by registered name or ID"
+          className="w-full sm:w-80 border border-gray-300 rounded px-3 py-2 text-sm"
+        />
+      </div>
       <div>
-        {orders.map((order) => (
+        {filteredOrders.length === 0 ? (
+          <div className="border border-dashed border-gray-300 p-6 text-center text-sm text-gray-500">
+            No orders found for this search.
+          </div>
+        ) : (
+          filteredOrders.map((order) => (
           <div key={order._id} className="grid grid-cols-1 sm:grid-cols-[0.5fr_2fr_1fr] lg:grid-cols-[0.5fr_2fr_1fr_1fr_1fr] gap-3 items-start border-2 border-gray-200 p-5 md:p-8 my-3 md:my-4 text-xs sm:text-sm text-gray-700">
             <img className="w-12" src={assets.parcel_icon} alt="" />
             <div>
@@ -63,6 +97,12 @@ const Orders = ({ token }) => {
                       {index < order.items.length - 1 ? ',' : ''}
                   </p>
                 ))}
+              </div>
+
+              <div className="mt-3 mb-3 rounded bg-slate-50 p-3">
+                <p className="font-semibold text-slate-800">Registered user: {order.user?.name || 'Unknown'}</p>
+                <p className="text-xs text-slate-500">Email: {order.user?.email || 'Not available'}</p>
+                <p className="text-xs text-slate-500">Customer ID: {order.user?.customerId || order.userId || 'N/A'}</p>
               </div>
 
               <p className="mt-3 mb-2 font-medium">{order.address.firstName} {order.address.lastName}</p>
@@ -87,7 +127,8 @@ const Orders = ({ token }) => {
               <option value="Delivered">Delivered</option>
             </select>
           </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

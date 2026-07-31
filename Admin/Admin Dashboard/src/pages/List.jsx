@@ -74,14 +74,16 @@ const List = ({token}) => {
         <p className='text-xl font-semibold text-slate-800'>Product catalog</p>
         <p className='text-sm text-slate-500'>Manage your electronics and gadget inventory.</p>
       </div>
-      <div className='flex gap-2 items-center mb-4'>
-        <input value={queryId} onChange={(e) => setQueryId(e.target.value)} placeholder='Search by product ID' className='px-3 py-2 border rounded-md' />
-        <button type='button' onClick={() => {
-          if (!queryId) { fetchList(); return }
-          const found = list.filter(p => p.productCode && p.productCode.toLowerCase() === queryId.toLowerCase())
-          setList(found)
-        }} className='px-3 py-2 bg-slate-700 text-white rounded-md'>Search</button>
-        <button type='button' onClick={() => { setQueryId(''); fetchList() }} className='px-3 py-2 border rounded-md'>Reset</button>
+      <div className='flex flex-col gap-2 sm:flex-row sm:items-center mb-4'>
+        <input value={queryId} onChange={(e) => setQueryId(e.target.value)} placeholder='Search by product ID' className='flex-1 min-w-0 px-3 py-2 border rounded-md' />
+        <div className='flex flex-wrap gap-2 sm:flex-nowrap'>
+          <button type='button' onClick={() => {
+            if (!queryId) { fetchList(); return }
+            const found = list.filter(p => p.productCode && p.productCode.toLowerCase() === queryId.toLowerCase())
+            setList(found)
+          }} className='px-3 py-2 bg-slate-700 text-white rounded-md w-full sm:w-auto'>Search</button>
+          <button type='button' onClick={() => { setQueryId(''); fetchList() }} className='px-3 py-2 border rounded-md w-full sm:w-auto'>Reset</button>
+        </div>
       </div>
       <div className='flex flex-col gap-2'>
 
@@ -103,21 +105,27 @@ const List = ({token}) => {
             const productLink = `${frontendUrl}/product/${item._id}`
 
             return (
-              <div className='grid grid-cols-[1fr_3fr_1fr] md:grid-cols-[1fr_3fr_1fr_1fr_1fr_1fr] items-center gap-2 py-2 px-3 border text-sm border-slate-200 bg-white rounded-lg' key={item._id}>
+              <div className='grid grid-cols-[auto_minmax(0,1fr)] gap-3 py-3 px-3 border text-sm border-slate-200 bg-white rounded-lg sm:grid-cols-[1fr_3fr_1fr_1fr_1fr_1fr] sm:items-center' key={item._id}>
                 <a href={productLink} target='_blank' rel='noreferrer' className='flex items-center justify-start'>
                   <img src={item.image[0]} alt={item.name} className='w-12 h-12 rounded-lg object-cover cursor-pointer hover:opacity-80 transition' />
                 </a>
-                <a href={productLink} target='_blank' rel='noreferrer' className='text-slate-700 hover:text-blue-600 hover:underline cursor-pointer'>
-                  <p>[{item.productCode}] {item.name}</p>
-                </a>
-                <p>{item.category}</p>
-                <p>{currency}{item.price}</p>
-                <div className='flex items-center'>
+                <div className='min-w-0'>
+                  <p className='font-medium text-black break-words'>{item.name}</p>
+                  <p className='text-sm text-slate-500 break-all'>{item.productCode}</p>
+                  <div className='mt-2 space-y-1 text-sm text-slate-600 sm:hidden'>
+                    <p><span className='font-semibold text-slate-700'>Category:</span> {item.category}</p>
+                    <p><span className='font-semibold text-slate-700'>Price:</span> {currency}{item.price}</p>
+                    <p><span className='font-semibold text-slate-700'>Rating:</span> {ratingText}</p>
+                  </div>
+                </div>
+                <p className='hidden sm:block'>{item.category}</p>
+                <p className='hidden sm:block'>{currency}{item.price}</p>
+                <div className='hidden sm:flex items-center'>
                   <span className={`rounded-full px-2 py-1 text-xs font-medium ${summary?.count ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
                     {ratingText}
                   </span>
                 </div>
-                <button type='button' onClick={() => removeProduct(item._id)} aria-label={`Remove ${item.name}`} className='text-right md:text-center cursor-pointer text-lg text-red-500'>×</button>
+                <button type='button' onClick={() => removeProduct(item._id)} aria-label={`Remove ${item.name}`} className='justify-self-end sm:justify-self-center cursor-pointer text-lg text-red-500'>×</button>
               </div>
             )
           })
@@ -129,3 +137,6 @@ const List = ({token}) => {
 }
 
 export default List
+
+
+// @wasifali2004 please add update product feature. 

@@ -204,7 +204,23 @@ const verifyStripe = async (req,res) => {
 const allOrders = async (_req,res) => {
     try{
         const orders = await orderModel.find({}).sort({date: -1})
-        res.json({success:true, orders})
+        const userIds = [...new Set(orders.map((order) => order.userId).filter(Boolean))]
+        const users = await userModel.find({ _id: { $in: userIds } })
+        const userMap = new Map(
+            users.map((user) => [user._id.toString(), {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                customerId: user.customerId || user._id.toString()
+            }])
+        )
+
+        const ordersWithUser = orders.map((order) => ({
+            ...order.toObject(),
+            user: userMap.get(order.userId?.toString()) || null
+        }))
+
+        res.json({success:true, orders: ordersWithUser})
     }
     catch(err) {
         console.error(err)
