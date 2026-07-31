@@ -2,6 +2,7 @@ import Stripe from 'stripe'
 import orderModel from "../models/orderModel.js";
 import productModel from '../models/productModel.js'
 import userModel from '../models/userModel.js'
+import noteModel from '../models/note.model.js'
 
 const currency = 'usd'
 const deliveryCharges = 10
@@ -258,4 +259,71 @@ const updateStatus = async (req,res) => {
     }
 }
 
-export {placeOrder, placeOrderStripe, userOrders, updateStatus, allOrders, verifyStripe};
+const analytics = async (_req, res) => {
+    try {
+        const orders = await orderModel.find({}).sort({date: 1})
+        const totalCustomers = await userModel.countDocuments({ role: 'user' })
+        const totalItems = await productModel.countDocuments({})
+        const notes = await noteModel.find({}).sort({ createdAt: -1 })
+
+        const totalRevenue = orders.reduce((sum, order) => sum + (Number(order.amount) || 0), 0)
+        const totalOrders = orders.length
+        const deliveredOrders = orders.filter((order) => order.status === 'Delivered').length
+        const pendingOrders = totalOrders - deliveredOrders
+        const itemsSold = orders.reduce((sum, order) => {
+            const orderItems = Array.isArray(order.items) ? order.items : []
+            const quantityTotal = orderItems.reduce((itemSum, item) => itemSum + (Number(item.quantity) || 0), 0)
+            return sum + quantityTotal
+        }, 0)
+
+        const monthBuckets = new Map()
+        for (let index = 11; index >= 0; index -= 1) {
+            const date = new Date()
+            date.setDate(1)
+            date.setMonth(date.getMonth() - index)
+            const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+            monthBuckets.set(key, {
+                label: date.toLocaleString('en-US', { month: 'short', year: 'numeric' }),
+                revenue: 0,
+                items: 0,
+                orders: 0,
+            })
+        }
+
+        orders.forEach((order) => {
+            const orderDate = new Date(order.date)
+            const key = `${orderDate.getFullYear()}-${String(orderDate.getMonth() + 1).padStart(2, '0')}`
+            const bucket = monthBuckets.get(key)
+            if (!bucket) return
+
+            bucket.revenue += Number(order.amount) || 0
+            bucket.items += (Array.isArray(order.items) ? order.items : []).reduce((sum, item) => sum + (Number(item.quantity) || 0), 0)
+            bucket.orders += 1
+        })
+
+        const monthlyData = Array.from(monthBuckets.values())
+
+        res.json({
+            success: true,
+            analytics: {
+                totalRevenue,
+                totalOrders,
+                pendingOrders,
+                deliveredOrders,
+                totalCustomers,
+                totalItems,
+                notes,
+                itemsSold,
+                labels: monthlyData.map((entry) => entry.label),
+                monthlyRevenue: monthlyData.map((entry) => entry.revenue),
+                monthlyItems: monthlyData.map((entry) => entry.items),
+                monthlyOrders: monthlyData.map((entry) => entry.orders),
+            },
+        })
+    } catch (err) {
+        console.error(err)
+        res.status(500).json({success:false, message: err.message})
+    }
+}
+
+export {placeOrder, placeOrderStripe, userOrders, updateStatus, allOrders, verifyStripe, analytics};

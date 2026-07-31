@@ -110,6 +110,7 @@ const Orders = ({ token }) => {
                 <p>{order.address.street},</p>
                 <p>{order.address.city}, {order.address.state}, {order.address.country}, {order.address.zipcode}</p>
               </div>
+              <p className="mt-1 text-xs text-slate-500">Email: {order.address?.email || order.user?.email || 'Not available'}</p>
               <p>{order.address.phone}</p>
             </div>
             <div>

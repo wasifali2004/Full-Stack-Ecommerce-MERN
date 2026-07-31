@@ -7,6 +7,7 @@ export const assets = {
     add_icon,
     order_icon,
     upload_area,
-    parcel_icon
+    parcel_icon,
+    chart_icon: 'https://cdn-icons-png.flaticon.com/512/1170/1170576.png'
 }
 

@@ -8,6 +8,7 @@ import Orders from './pages/Orders'
 import Login from './components/Login'
 import { useState } from 'react'
 import { ToastContainer } from 'react-toastify';
+import Chart from './pages/Chart'
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem('token')?localStorage.getItem('token') : '')
@@ -35,6 +36,7 @@ const App = () => {
           <Route path='/add' element={<Add token={token}/>} />
           <Route path='/list' element={<List token={token}/>} />
           <Route path='/orders' element={<Orders token={token}/>} />
+          <Route path='/chart' element={<Chart token={token}/>} />
           <Route path='*' element={<Navigate to='/add' replace />} />
         </Routes>
         </div>
