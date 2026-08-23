@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 const Reviews = ({ productId, token, backendUrl, onReviewChange }) => {
