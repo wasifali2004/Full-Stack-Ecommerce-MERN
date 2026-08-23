@@ -44,7 +44,7 @@ const PlaceOrder = () => {
       }
       switch (method) {
 
-        case 'cod' :
+        case 'cod' : {
           const response = await axios.post(backendUrl+'/api/order/place',{headers: {token}}, orderData)
           if(response.data.success) {
             setCartItems({})
@@ -54,31 +54,34 @@ const PlaceOrder = () => {
             toast.error(response.data.message)
           }
           break;
-        
-        case 'stripe':
-          const res = await axios.post(backendUrl+'/api/order/stripe',orderData, {headers: {token}}) 
-          if(res.data.success) {
-            const {session_url} = responseStripe.data
+        }
+
+        case 'stripe': {
+          const response = await axios.post(backendUrl+'/api/order/stripe',orderData, {headers: {token}})
+          if(response.data.success) {
+            const {session_url} = response.data
             window.location.replace(session_url)
           }
           else {
             toast.error(response.data.message)
           }
-        break;
+          break;
+        }
 
-        case 'payoneer': 
-          const resp = await axios.post(backendUrl+'/api/order/payoneer',orderData, {headers: {token}})
-          if(res.data.success) {
-            const {session_url} = responseStripe.data
+        case 'payoneer': {
+          const response = await axios.post(backendUrl+'/api/order/payoneer',orderData, {headers: {token}})
+          if(response.data.success) {
+            const {session_url} = response.data
             window.location.replace(session_url)
           }
           else {
             toast.error(response.data.message)
-          } 
-        break;
+          }
+          break;
+        }
 
-        default: 
-          break;  
+        default:
+          break;
       }
     }
     catch(err) {

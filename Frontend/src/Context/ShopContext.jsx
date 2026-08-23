@@ -52,17 +52,12 @@ const ShopContextProvider = (props) => {
     const getCartAmount = () => {
       let totalAmount = 0;
       for(const items in cartItems) {
-        let itemInfo = products.find(product => product._id === items)
+        const itemInfo = products.find(product => product._id === items)
         for(const item in cartItems[items]) {
-          try{
-            if(cartItems[items][item] > 0) {
-              totalAmount += itemInfo.price * cartItems[items][item];
-            }
+          if(itemInfo && cartItems[items][item] > 0) {
+            totalAmount += itemInfo.price * cartItems[items][item];
           }
-          catch(err) {
-            
-          }
-        } 
+        }
       }
       return totalAmount;
     }
@@ -71,13 +66,8 @@ const ShopContextProvider = (props) => {
       let totalCount = 0;
       for(const items in cartItems) {
           for(const item in cartItems[items]) {
-            try {
-              if(cartItems[items][item] > 0) {
-                totalCount += cartItems[items][item]
-              }
-            }
-            catch(err){
-              
+            if(cartItems[items][item] > 0) {
+              totalCount += cartItems[items][item]
             }
           }
         }
@@ -124,7 +114,6 @@ const ShopContextProvider = (props) => {
         }
         else {
           console.log("Not get user cart data from backend.")
-          return res.json({success:false, message:"Not Fetched data from Backend"})
         }
       }
       catch(err) {
