@@ -17,6 +17,10 @@ const productSchema = new mongoose.Schema({
         type:Array,
         required: true
     },
+    imagePublicIds: {
+        type:[String],
+        default: []
+    },
     category: {
         type:String,
         required: true
@@ -25,9 +29,27 @@ const productSchema = new mongoose.Schema({
         type:String,
         required: true
     },
+    variants: {
+        type:[String],
+        required: true,
+        default: ['Standard']
+    },
+    specifications: {
+        type: [{ key: String, value: String }],
+        default: undefined,
+    },
+    colors: {
+        type: [String],
+        default: undefined,
+    },
+    productCode: {
+        type: String,
+        required: true,
+        unique: true,
+    },
     sizes: {
-        type:Array,
-        required: true
+        type:[String],
+        default: undefined
     },
     bestSeller: {
         type:Boolean,

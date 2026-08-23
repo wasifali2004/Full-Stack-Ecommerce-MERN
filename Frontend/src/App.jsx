@@ -1,6 +1,4 @@
-import React from 'react'
-import {Routes} from 'react-router-dom'
-import  {Route}  from 'react-router-dom'
+import {Route, Routes} from 'react-router-dom'
 import Home from './Pages/Home'
 import Collection from './Pages/Collections'
 import About from './Pages/About'
@@ -18,7 +16,7 @@ import Verify from './Pages/Verify'
 
 const App = () => {
   return (
-    <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]'>
+    <div className='max-w-[1500px] mx-auto px-4 sm:px-[5vw] md:px-[6vw]'>
       <ToastContainer />
       <Navbar/>
       <SearchBar/>

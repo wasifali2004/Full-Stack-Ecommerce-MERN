@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Prata&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300..800&display=swap');
 @import "tailwindcss";
 
 *{
@@ -6,12 +6,24 @@
 }
 
 .active {
-  background-color: #ffebf5;
-
+  background-color: #eff6ff;
+  border-color: #93c5fd;
+  color: #1d4ed8;
 }
 
 select,input, textarea {
   border: 1px solid #c2c2c2;
-  outline-color: #C586A5;
-  border-radius: 4px;
+  outline-color: #2563eb;
+  border-radius: 8px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

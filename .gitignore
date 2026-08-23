@@ -1,3 +1,5 @@
 node_modules
 
 *.env
+Backend/.local-mongodb/
+Backend/backend-dev*.log

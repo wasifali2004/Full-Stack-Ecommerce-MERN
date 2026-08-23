@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useContext } from 'react'
 import { useState } from 'react'
-import { ShopContext } from '../Context/ShopContext'
+import { ShopContext } from '../Context/ShopContext.js'
 import axios from "axios"
 import { toast } from 'react-toastify'
 
@@ -37,8 +37,7 @@ const Login = () => {
       }
     }
     catch(err) {
-      console.log(err)
-      toast.error(err.message)
+      toast.error(err.response?.data?.message || err.message)
     }
   }
 
@@ -46,13 +45,13 @@ const Login = () => {
     if(token) {
       navigate('/')
     }
-  }, [token])
+  }, [navigate, token])
 
   return (
-    <form onSubmit={onSubmitHandler} className='flex flex-col items-center w-[380px] m-auto mt-14 gap-4 text-gray-800'>
+    <form onSubmit={onSubmitHandler} className='flex flex-col items-center w-full max-w-[400px] m-auto mt-14 gap-4 text-slate-800 bg-white border border-slate-100 rounded-2xl shadow-lg shadow-blue-100/50 px-8 py-9'>
       <div className='inline-flex items-center gap-2 mb-2 mt-10'>
-        <p className='prata-regular text-3xl'>{currentState}</p>
-        <hr className='border-none h-[1.5px] w-8 bg-gray-800' />
+        <p className='font-bold text-3xl'>{currentState}</p>
+        <hr className='border-none h-[2px] w-8 bg-blue-600' />
       </div>
       {currentState === 'Login'? '': <input onChange={(e) => setName(e.target.value)} value={name} type="text" className='w-full px-3 py-2 border border-gray-800 ' placeholder='Name'   required /> }
       <input onChange={(e) => setEmail(e.target.value)} type="email" value={email} className='w-full px-3 py-2 border border-gray-800  ' placeholder='Email' required />
@@ -64,7 +63,7 @@ const Login = () => {
           currentState === 'Login'? <p className='cursor-pointer' onClick={() => setCurrentState('Sign Up')} >Create account</p> : <p className='cursor-pointer' onClick={() => setCurrentState('Login')} >Login Here</p>
         }
       </div>
-      <button className='bg-black text-white font-light px-8 py-2 cursor-pointer mt-4' >{currentState === 'Login'? 'Sign In' : 'Sign Up'}</button>
+      <button className='bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium px-8 py-2.5 cursor-pointer mt-4 transition-colors' >{currentState === 'Login'? 'Sign In' : 'Sign Up'}</button>
     </form>
   )
 }

@@ -1,5 +1,5 @@
-import React, { useContext, useEffect } from 'react'
-import {ShopContext} from '../Context/ShopContext'
+import { useContext, useEffect } from 'react'
+import {ShopContext} from '../Context/ShopContext.js'
 import { assets } from '../assets/assets'
 import {useLocation} from 'react-router-dom'
 import { useState } from 'react'
@@ -16,7 +16,7 @@ const SearchBar = () => {
         else {
             setVisible(false);
         }
-    },[location])
+    },[location.pathname])
 
   return showSearch && visible? (
     <div className='border-t border-b bg-gray-50 text-center'>

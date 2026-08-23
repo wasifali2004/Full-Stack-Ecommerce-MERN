@@ -1,25 +1,27 @@
-import React from 'react'
+import { Link } from 'react-router-dom'
 import {assets} from '../assets/assets'
 
 const Hero = () => {
   return (
-    <div className='flex flex-col sm:flex-row border border-gray-400'>
-        {/* Hero left side */}
-        <div className='w-full sm:w-1/2 flex items-center justify-center py-10 sm:py-0'>
-        <div className='text-[#414141]'>
-            <div className='flex items-center gap-2'>
-            <p className='w-8 md:w-11 h-[2px] bg-[#414141]'></p>
-            <p className='font-medium text-sm md:text-base'>OUR BESTSELLERS</p>
-            </div>
-            <h1 className='prata-regular text-3xl sm:py-3 lg:text-5xl loading-relaxed'>Latest Arrivals</h1>
-            <div className='flex items-center gap-2'>
-              <p className='font-semibold text-sm md:text-base'>SHOP NOW</p>
-              <p className='w-8 md:w-11 h-[1px] bg-[#414141]'></p>
-            </div>
+    <section className='relative overflow-hidden rounded-3xl bg-slate-950 text-white'>
+      <div className='absolute -top-24 -left-24 w-72 h-72 bg-blue-600/30 blur-3xl rounded-full'></div>
+      <div className='relative grid sm:grid-cols-2 items-stretch'>
+        <div className='flex items-center px-7 py-14 sm:px-10 lg:px-16 lg:py-20'>
+          <div className='max-w-xl'>
+            <p className='text-blue-300 font-semibold tracking-[0.22em] text-xs sm:text-sm'>NEXT-GEN TECH</p>
+            <h1 className='text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mt-4'>Smart tech.<br/>Better living.</h1>
+            <p className='text-slate-300 mt-5 max-w-md'>Discover carefully selected electronics, powerful gadgets, and everyday accessories built to keep you connected.</p>
+            <Link to='/collection' className='inline-flex items-center gap-3 mt-8 bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-semibold transition'>
+              SHOP THE COLLECTION
+              <span aria-hidden='true'>→</span>
+            </Link>
+          </div>
         </div>
+        <div className='min-h-[330px] sm:min-h-[500px]'>
+          <img src={assets.hero_img} alt='Modern electronics and smart gadgets' className='w-full h-full object-cover' />
         </div>
-        <img src={assets.hero_img} alt=""  className='w-full sm:w-1/2'/>
-    </div>
+      </div>
+    </section>
   )
 }
 

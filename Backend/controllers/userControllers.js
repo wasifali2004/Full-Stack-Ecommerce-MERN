@@ -1,21 +1,16 @@
 import validator from 'validator';
 import userModel from "../models/userModel.js";
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import dotenv from 'dotenv';
-dotenv.config();
 
 const createToken = (id) => {
-    return jwt.sign(
-        { id }, 
-        process.env.JWT_SECRET, 
-    );
+    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
 }
 
 const loginUser = async (req, res) => {
     try {
-        console.log("Request Body:", req.body);
-        const { email, password } = req.body;
+        const email = req.body.email?.trim().toLowerCase();
+        const { password } = req.body;
         
         if (!email || !password) {
             return res.status(400).json({ 
@@ -46,7 +41,7 @@ const loginUser = async (req, res) => {
             });
         }
         else {
-            res.json({ 
+            return res.status(401).json({
                 success: false,
                 message: 'Invalid Credentials'
             });
@@ -64,19 +59,25 @@ const loginUser = async (req, res) => {
 
 const registerUser = async (req, res) => {
     try{
-        const {name, email, password} = req.body;
+        const name = req.body.name?.trim()
+        const email = req.body.email?.trim().toLowerCase()
+        const {password} = req.body;
+
+        if (!name || !email || !password) {
+            return res.status(400).json({success:false, message: "Name, email and password are required"})
+        }
 
         const exist = await userModel.findOne({email})
         //Checking User
         if(exist) {
-            return res.json({success:false, message: "User already exist"})
+            return res.status(409).json({success:false, message: "User already exists"})
         }
 
         if(!validator.isEmail(email)) {
-            return res.json({success:false, message: "Please enter a valid email"})
+            return res.status(400).json({success:false, message: "Please enter a valid email"})
         }
         if(password.length < 8) {
-            return res.json({success:false, message: "Enter a valid password"})
+            return res.status(400).json({success:false, message: "Password must contain at least 8 characters"})
         }
          
         const salt = await bcrypt.genSalt(10)
@@ -84,43 +85,68 @@ const registerUser = async (req, res) => {
 
         const newUser = new userModel({
             name,
-            email, 
-            password:hashPassword
+            email,
+            password:hashPassword,
+            role: 'user'
         })
 
         const user = await newUser.save()
         const token = createToken(user._id)
-        return res.json({success:true, token})
+        return res.json({
+            success:true,
+            token,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                customerId: user.customerId
+            }
+        })
     }
     catch(err) {
-        console.log("Error ocurred")
-        return res.json({success:false, message:err.message})
+        return res.status(500).json({success:false, message:err.message})
     }
 }
 
 const adminLogin = async (req, res) => {
     try {
-        const { email, password } = req.body;
-        if(email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-            const token = jwt.sign(
-                { 
-                    id: "admin-id",
-                    isAdmin: true 
-                },
-                process.env.JWT_SECRET,
-            );
-            res.json({
-                success: true,
-                token,
-                isAdmin: true
-            });
-        }
-        else {
-            res.status(401).json({
+        const email = req.body.email?.trim().toLowerCase()
+        const { password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({
                 success: false,
-                message: "Invalid credentials"
+                message: "Email and password are required"
             });
         }
+
+        const user = await userModel.findOne({ email });
+        if (!user || user.role !== 'admin') {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid admin credentials"
+            });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid admin credentials"
+            });
+        }
+
+        const token = jwt.sign(
+            { id: user._id, isAdmin: true, role: 'admin' },
+            process.env.JWT_SECRET,
+            { expiresIn: '12h' },
+        );
+
+        res.json({
+            success: true,
+            token,
+            isAdmin: true
+        });
     }
     catch(err) {
         console.error("Admin Login Error:", err);

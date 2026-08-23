@@ -1,28 +1,22 @@
-import React from 'react'
 import { assets } from '../assets/assets'
 
 const OurPolicy = () => {
-  return (
-    <div className='flex flex-col sm:flex-row justify-around gap-12 sm:gap-2 text-center py-20 text-xs sm:text-sm md:text-base text-gray-700'>
-        <div>
-        <img src={assets.exchange_icon} alt="" className='w-12 m-auto mb-5' />
-        <p className='font-semibold'>Easy Exchange Policy</p>
-        <p className='text-gray-400'>We offer hassle free exchange policy</p>
-        </div>
+  const policies = [
+    {icon: assets.exchange_icon, title: 'Easy 7-day returns', text: 'Straightforward returns on eligible gadgets and accessories.'},
+    {icon: assets.quality_icon, title: 'Quality checked', text: 'Products are selected from trusted suppliers and carefully reviewed.'},
+    {icon: assets.support_img, title: 'Helpful tech support', text: 'Get guidance before your purchase and support after delivery.'},
+  ]
 
-        <div>
-        <img src={assets.quality_icon} alt="" className='w-12 m-auto mb-5' />
-        <p className='font-semibold'>Days Return Policy</p>
-        <p className='text-gray-400'>We provide 7 days free return policy</p>
+  return (
+    <section className='grid sm:grid-cols-3 gap-5 py-16'>
+      {policies.map((policy) => (
+        <div key={policy.title} className='rounded-2xl border border-slate-200 bg-white p-7 text-center shadow-sm'>
+          <img src={policy.icon} alt='' className='w-10 m-auto mb-4' />
+          <p className='font-semibold text-slate-800'>{policy.title}</p>
+          <p className='text-slate-500 text-sm mt-2'>{policy.text}</p>
         </div>
-        <div>
-        <img src={assets.support_img} alt="" className='w-12 m-auto mb-5' />
-        <p className='font-semibold'>Best Customer Support</p>
-        <p className='text-gray-400'>We provide 24/7 customer support</p>
-        </div>
-        
-    </div>
-    
+      ))}
+    </section>
   )
 }
 
