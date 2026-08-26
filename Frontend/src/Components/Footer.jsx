@@ -23,7 +23,7 @@ const Footer = () => {
         <div>
           <p className='text-white font-semibold mb-5'>GET IN TOUCH</p>
           <ul className='flex flex-col gap-2 text-slate-400'>
-            <li>+92 340 5245826</li>
+            <li>+92 111111</li>
             <li>support@nexora.store</li>
           </ul>
         </div>
