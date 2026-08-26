@@ -18,7 +18,7 @@ const Contact = () => {
           <div className='text-slate-600 leading-7'>
             <p className='font-semibold text-slate-900'>Nexora support</p>
             <p>Sheikh Malton Town, Mardan<br/>KPK, Pakistan</p>
-            <p className='mt-3'>Tel: +92 340 5245826<br/>Email: support@nexora.store</p>
+            <p className='mt-3'>Tel: +92 111111<br/>Email: support@nexora.store</p>
           </div>
 
           <a href='mailto:support@nexora.store' className='bg-blue-600 hover:bg-blue-700 text-white px-7 py-3 rounded-xl text-sm font-semibold transition'>EMAIL SUPPORT</a>
